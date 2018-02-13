@@ -6,12 +6,12 @@
 /*
  * This function should initialize your display screen
  */
-void video_init();
+void main_callback_init();
  
 /*
  * This function should de-initialize your display screen
  */
-void video_exit();
+void gfx_exit();
 
 /*
  * This function should use sockets to connect to a vnc server

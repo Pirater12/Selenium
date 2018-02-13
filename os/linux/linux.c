@@ -13,12 +13,12 @@ void debug_print(char *format, ...)
 {
 	;
 }
-void video_init()
+void main_callback_init()
 {
 	printf("Initing video");
 }
 
-void video_exit()
+void gfx_exit()
 {
 	printf("Exiting video");
 }

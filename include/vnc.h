@@ -28,13 +28,14 @@ typedef struct
 	uint16_t height;
 	pixel_format format;
 	uint32_t len;
-	//uint8_t name[len];
+	char *name;
 }server_init;
 
 typedef struct
 {
 	uint8_t shared;
 }client_init;
+
 typedef struct 
 {
 	int fd;

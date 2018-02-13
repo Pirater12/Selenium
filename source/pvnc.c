@@ -23,9 +23,8 @@ uint16_t ntohs_md(uint16_t netlong)
 
 int main(void)
 {
+	main_callback_init();
 	vnc *g_vnc = malloc(sizeof(*g_vnc));
-	video_init();
-	
 	g_vnc->fd = vnc_connect("192.168.225.242", "5900");
 	vnc_sock_read(g_vnc->fd, g_vnc->ver, 12); 
 	vnc_sock_write(g_vnc->fd, "RFB 003.003\n", 12);
@@ -40,7 +39,7 @@ int main(void)
 		if(i == g_vnc->connstat)
 		{
 			i = vnc_sock_read(g_vnc->fd, &g_vnc->failure, ntohl_md(g_vnc->connstat));
-			printf("VNC init failed %s\n", g_vnc->failure);
+			printf("VNC init failed %s\n", g_vnc->failure); 
 		}
 	}
 	
@@ -49,8 +48,18 @@ int main(void)
 	client.shared = 1;
 	
 	vnc_sock_write(g_vnc->fd, &client, sizeof(client));
-	vnc_sock_read(g_vnc->fd, &server, sizeof(server)); 
-	printf("server->width %"PRIu16"\n", ntohs_md(server.width));
+	vnc_sock_read(g_vnc->fd, &server, sizeof(server) - sizeof(char *));
 	
-	video_exit();
+	server.width = ntohs(server.width);
+	server.height = ntohs(server.height);
+	server.len = ntohl(server.len); 
+	printf("server->width %d, server->height %d, server->len %d\n",server.width, server.height, server.len);
+	server.name = malloc(server.len + 1); // Add 1 for NULL
+	vnc_sock_read(g_vnc->fd, server.name, server.len);
+	server.name[server.len + 1] = '\0';
+	printf("server->name %s\n", server.name);
+	
+	free(server.name);
+	free(g_vnc);
+	gfx_exit();
 }
