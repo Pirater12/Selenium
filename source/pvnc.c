@@ -4,7 +4,7 @@
 #include <string.h>
 #include <inttypes.h>
 #include <arpa/inet.h>
-#include "vnc.h"
+#include "stc.h"
 
 //Thanks StackOverflow
 uint32_t ntohl_md(uint32_t netlong)
@@ -50,15 +50,24 @@ int main(void)
 	vnc_sock_write(g_vnc->fd, &client, sizeof(client));
 	vnc_sock_read(g_vnc->fd, &server, sizeof(server) - sizeof(char *));
 	
-	server.width = ntohs(server.width);
-	server.height = ntohs(server.height);
-	server.len = ntohl(server.len); 
+	server.width = ntohs_md(server.width);
+	server.height = ntohs_md(server.height);
+	server.len = ntohl_md(server.len); 
 	printf("server->width %d, server->height %d, server->len %d\n",server.width, server.height, server.len);
 	server.name = malloc(server.len + 1); // Add 1 for NULL
 	vnc_sock_read(g_vnc->fd, server.name, server.len);
 	server.name[server.len + 1] = '\0';
 	printf("server->name %s\n", server.name);
-	
+	fb_update r;
+	r.x = htons(0);
+	r.y = htons(0);
+	r.w = htons(0);
+	r.h = htons(0);
+	r.incremental = 0;
+	r.type = 3;
+	vnc_sock_write(g_vnc->fd, &r, sizeof(r));
+	printf("requested\n");
+	handleServerToClientMessages(g_vnc);
 	free(server.name);
 	free(g_vnc);
 	gfx_exit();

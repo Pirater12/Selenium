@@ -43,3 +43,13 @@ typedef struct
 	int connstat;
 	char failure[100];
 }vnc;
+
+typedef struct
+{
+	uint8_t type;
+	uint8_t incremental;
+	uint16_t x;
+	uint16_t y;
+	uint16_t w;
+	uint16_t h;
+}fb_update;
