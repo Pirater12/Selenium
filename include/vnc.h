@@ -42,6 +42,7 @@ typedef struct
 	char ver[12];
 	int connstat;
 	char failure[100];
+	pixel_format format; 
 }vnc;
 
 typedef struct
@@ -53,3 +54,12 @@ typedef struct
 	uint16_t w;
 	uint16_t h;
 }fb_update;
+
+typedef struct
+{
+	uint16_t x;
+	uint16_t y;
+	uint16_t w;
+	uint16_t h;
+	int32_t encoding_type; 
+}fb_update_from_server;

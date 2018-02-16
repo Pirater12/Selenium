@@ -58,15 +58,16 @@ int main(void)
 	vnc_sock_read(g_vnc->fd, server.name, server.len);
 	server.name[server.len + 1] = '\0';
 	printf("server->name %s\n", server.name);
+	g_vnc->format = server.format;
 	fb_update r;
 	r.x = htons(0);
 	r.y = htons(0);
-	r.w = htons(0);
-	r.h = htons(0);
+	r.w = htons(server.width);
+	r.h = htons(server.height);
 	r.incremental = 0;
 	r.type = 3;
 	vnc_sock_write(g_vnc->fd, &r, sizeof(r));
-	printf("requested\n");
+	
 	handleServerToClientMessages(g_vnc);
 	free(server.name);
 	free(g_vnc);
